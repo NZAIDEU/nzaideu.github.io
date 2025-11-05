@@ -33,6 +33,20 @@
       padding: 0 20px;
     }
 
+    section.intro, section.objectifs {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    section.intro h2, section.objectifs h2 {
+      color: #dd2476;
+      margin-top: 0;
+    }
+
     #question-box {
       background: white;
       border-radius: 12px;
@@ -105,7 +119,7 @@
     }
 
     .ad-section {
-      visibility: hidden; /* masqué mais avec largeur calculable */
+      display: none;
       background: #fffbe6;
       border-left: 5px solid #ffc107;
       padding: 15px;
@@ -142,18 +156,18 @@
     <p>Langage : <span id="langue-actuelle">Python</span> | Niveau : <span id="niveau-actuel">Débutant</span></p>
   </header>
 
-  <section class="ad-section" id="ad-container">
-    <h2>📢 Publicité sponsorisée</h2>
-    <div class="ad-box">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2650734904975532"
-        crossorigin="anonymous"></script>
-      <ins class="adsbygoogle"
-        style="display:block"
-        data-ad-format="autorelaxed"
-        data-ad-client="ca-pub-2650734904975532"
-        data-ad-slot="3521813772"
-        data-ad-status="hidden"></ins>
-    </div>
+  <section class="intro">
+    <h2>🎯 Bienvenue dans le quiz Python débutant</h2>
+    <p>Ce quiz interactif vous permet de tester vos connaissances en programmation Python. Chaque question est accompagnée d'une explication pour vous aider à progresser. Bonne chance !</p>
+  </section>
+
+  <section class="objectifs">
+    <h2>📚 Objectifs pédagogiques</h2>
+    <ul>
+      <li>Renforcer la logique et la syntaxe Python</li>
+      <li>Apprendre en s’amusant grâce à des explications claires</li>
+      <li>Suivre sa progression et améliorer ses compétences</li>
+    </ul>
   </section>
 
   <main id="quiz-container">
@@ -176,8 +190,22 @@
     </section>
   </main>
 
+  <section class="ad-section" id="ad-container">
+    <h2>📢 Publicité sponsorisée</h2>
+    <div class="ad-box">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2650734904975532"
+        crossorigin="anonymous"></script>
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-format="autorelaxed"
+        data-ad-client="ca-pub-2650734904975532"
+        data-ad-slot="3521813772"
+        data-ad-status="hidden"></ins>
+    </div>
+  </section>
+
   <footer>
-    &copy; 2025 Lyncs CodeQuest
+    &copy; 2025 Lyncs CodeQuest – Créé avec ❤️ par Rayan
   </footer>
 
   <script type="module" src="quiz.js"></script>
@@ -186,16 +214,12 @@
       const adContainer = document.getElementById('ad-container');
       const adIns = document.querySelector('.adsbygoogle');
 
-      // Affiche le conteneur pour que Google détecte la largeur
-      adContainer.style.visibility = 'visible';
-
-      // Lance le push
+      adContainer.style.display = 'none';
       (adsbygoogle = window.adsbygoogle || []).push({});
 
-      // Observe si la pub est remplie
       const observer = new MutationObserver(() => {
         if (adIns.getAttribute('data-ad-status') === 'filled') {
-          adContainer.style.visibility = 'visible';
+          adContainer.style.display = 'block';
           observer.disconnect();
         }
       });
