@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz – Lyncs CodeQuest</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -31,20 +32,6 @@
       max-width: 800px;
       margin: 40px auto;
       padding: 0 20px;
-    }
-
-    section.intro, section.objectifs {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    section.intro h2, section.objectifs h2 {
-      color: #dd2476;
-      margin-top: 0;
     }
 
     #question-box {
@@ -117,37 +104,6 @@
       padding: 20px;
       color: #777;
     }
-
-    .ad-section {
-      display: none;
-      background: #fffbe6;
-      border-left: 5px solid #ffc107;
-      padding: 15px;
-      margin: 30px 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    .ad-section h2 {
-      margin-top: 0;
-      color: #dd2476;
-      font-size: 1.2em;
-    }
-
-    .ad-box {
-      margin-top: 10px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .ad-box:hover {
-      transform: scale(1.01);
-    }
-
-    .adsbygoogle {
-      min-width: 320px;
-      width: 100%;
-    }
   </style>
 </head>
 <body>
@@ -156,79 +112,92 @@
     <p>Langage : <span id="langue-actuelle">Python</span> | Niveau : <span id="niveau-actuel">Débutant</span></p>
   </header>
 
-  <section class="intro">
-    <h2>🎯 Bienvenue dans le quiz Python débutant</h2>
-    <p>Ce quiz interactif vous permet de tester vos connaissances en programmation Python. Chaque question est accompagnée d'une explication pour vous aider à progresser. Bonne chance !</p>
-  </section>
-
-  <section class="objectifs">
-    <h2>📚 Objectifs pédagogiques</h2>
-    <ul>
-      <li>Renforcer la logique et la syntaxe Python</li>
-      <li>Apprendre en s’amusant grâce à des explications claires</li>
-      <li>Suivre sa progression et améliorer ses compétences</li>
-    </ul>
-  </section>
-
   <main id="quiz-container">
     <p id="timer">⏱️ Temps restant : 20s</p>
 
     <section id="question-box">
       <h2 id="question-text">Chargement de la question...</h2>
-      <ul id="options-list">
-        <li>Option A</li>
-        <li>Option B</li>
-        <li>Option C</li>
-        <li>Option D</li>
-      </ul>
+      <ul id="options-list"></ul>
     </section>
 
     <section id="explanation-box" style="display: none;">
       <h3>Explication</h3>
-      <p id="explanation-text">L’explication de la réponse s’affichera ici.</p>
+      <p id="explanation-text"></p>
       <button id="next-btn" class="btn">Question suivante</button>
     </section>
   </main>
-
-  <section class="ad-section" id="ad-container">
-    <h2>📢 Publicité sponsorisée</h2>
-    <div class="ad-box">
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2650734904975532"
-        crossorigin="anonymous"></script>
-      <ins class="adsbygoogle"
-        style="display:block"
-        data-ad-format="autorelaxed"
-        data-ad-client="ca-pub-2650734904975532"
-        data-ad-slot="3521813772"
-        data-ad-status="hidden"></ins>
-    </div>
-  </section>
 
   <footer>
     &copy; 2025 Lyncs CodeQuest – Créé avec ❤️ par Rayan
   </footer>
 
-  <script type="module" src="quiz.js"></script>
   <script>
-    window.addEventListener('load', () => {
-      const adContainer = document.getElementById('ad-container');
-      const adIns = document.querySelector('.adsbygoogle');
+    const supabase = createClient(
+      'https://TON_URL_SUPABASE.supabase.co',
+      'TON_ANON_KEY'
+    );
 
-      adContainer.style.display = 'none';
-      (adsbygoogle = window.adsbygoogle || []).push({});
+    let questions = [];
+    let currentIndex = 0;
+    let score = 0;
 
-      const observer = new MutationObserver(() => {
-        if (adIns.getAttribute('data-ad-status') === 'filled') {
-          adContainer.style.display = 'block';
-          observer.disconnect();
-        }
+    async function loadQuestions() {
+      const { data, error } = await supabase.from('questions').select('*');
+      if (error) {
+        console.error('Erreur chargement questions:', error);
+        return;
+      }
+      questions = data;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById('question-text').textContent = q.question;
+      const optionsList = document.getElementById('options-list');
+      optionsList.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const li = document.createElement('li');
+        li.textContent = opt;
+        li.onclick = () => checkAnswer(i);
+        optionsList.appendChild(li);
       });
+    }
 
-      observer.observe(adIns, {
-        attributes: true,
-        attributeFilter: ['data-ad-status']
+    function checkAnswer(selectedIndex) {
+      const q = questions[currentIndex];
+      const isCorrect = selectedIndex === q.correct_index;
+      if (isCorrect) score++;
+
+      document.getElementById('explanation-text').textContent = q.explanation;
+      document.getElementById('explanation-box').style.display = 'block';
+
+      const options = document.querySelectorAll('#options-list li');
+      options.forEach((opt, i) => {
+        opt.style.background = i === q.correct_index ? '#c8e6c9' : (i === selectedIndex ? '#ffcdd2' : '#eee');
+        opt.onclick = null;
       });
-    });
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+      document.getElementById('explanation-box').style.display = 'none';
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        showQuestion();
+      } else {
+        showScore();
+      }
+    };
+
+    function showScore() {
+      document.getElementById('quiz-container').innerHTML = `
+        <h2>🎉 Quiz terminé !</h2>
+        <p>Votre score : ${score} / ${questions.length}</p>
+        <p>Bravo pour votre progression !</p>
+      `;
+    }
+
+    loadQuestions();
   </script>
 </body>
 </html>
