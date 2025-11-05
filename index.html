@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz – Lyncs CodeQuest</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -99,6 +98,39 @@
       text-align: center;
     }
 
+    .ad-section {
+      visibility: hidden;
+      background: #fffbe6;
+      border-left: 5px solid #ffc107;
+      padding: 15px;
+      margin: 30px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .ad-section h2 {
+      margin-top: 0;
+      color: #dd2476;
+      font-size: 1.2em;
+    }
+
+    .ad-box {
+      margin-top: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      width: 100%;
+      min-width: 320px;
+    }
+
+    .ad-box:hover {
+      transform: scale(1.01);
+    }
+
+    .adsbygoogle {
+      width: 100%;
+      min-width: 320px;
+    }
+
     footer {
       text-align: center;
       padding: 20px;
@@ -127,19 +159,37 @@
     </section>
   </main>
 
+  <section class="ad-section" id="ad-container">
+    <h2>📢 Publicité sponsorisée</h2>
+    <div class="ad-box">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2650734904975532"
+        crossorigin="anonymous"></script>
+      <ins class="adsbygoogle"
+        style="display:block"
+        data-ad-format="autorelaxed"
+        data-ad-client="ca-pub-2650734904975532"
+        data-ad-slot="3521813772"
+        data-ad-status="hidden"></ins>
+    </div>
+  </section>
+
   <footer>
     &copy; 2025 Lyncs CodeQuest – Créé avec ❤️ par Rayan
   </footer>
 
   <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-    const supabase = createClient('https://eebahakxzjorpwtpbnop.supabase.co',
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYmFoYWt4empvcnB3dHBibm9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMTQ0MzYsImV4cCI6MjA3NzY5MDQzNn0.cLKe1RkhkM6pTA3MnkCSB7_UGMaq4dWRx6aDuAIMdFg'
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabase = createClient(
+      'https://eebahakxzjorpwtpbnop.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYmFoYWt4empvcnB3dHBibm9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMTQ0MzYsImV4cCI6MjA3NzY5MDQzNn0.cLKe1RkhkM6pTA3MnkCSB7_UGMaq4dWRx6aDuAIMdFg'
     );
 
     let questions = [];
     let currentIndex = 0;
     let score = 0;
+    let timerInterval;
+    let timeLeft = 20;
 
     async function loadQuestions() {
       const { data, error } = await supabase.from('questions').select('*');
@@ -149,6 +199,32 @@
       }
       questions = data;
       showQuestion();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timeLeft = 20;
+      document.getElementById('timer').textContent = `⏱️ Temps restant : ${timeLeft}s`;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          document.getElementById('timer').textContent = '⏱️ Temps écoulé';
+          disableOptions();
+        } else {
+          document.getElementById('timer').textContent = `⏱️ Temps restant : ${timeLeft}s`;
+        }
+      }, 1000);
+    }
+
+    function disableOptions() {
+      const options = document.querySelectorAll('#options-list li');
+      options.forEach(opt => {
+        opt.onclick = null;
+        opt.style.opacity = '0.6';
+        opt.style.cursor = 'default';
+      });
     }
 
     function showQuestion() {
@@ -162,9 +238,11 @@
         li.onclick = () => checkAnswer(i);
         optionsList.appendChild(li);
       });
+      startTimer();
     }
 
     function checkAnswer(selectedIndex) {
+      clearInterval(timerInterval);
       const q = questions[currentIndex];
       const isCorrect = selectedIndex === q.correct_index;
       if (isCorrect) score++;
@@ -198,6 +276,31 @@
     }
 
     loadQuestions();
+
+    // ✅ Gestion de la publicité AdSense
+    window.addEventListener('load', () => {
+      const adContainer = document.getElementById('ad-container');
+      const adIns = document.querySelector('.adsbygoogle');
+
+      // Affiche le conteneur pour que Google détecte la largeur
+      adContainer.style.visibility = 'visible';
+
+      // Lance le push
+      (adsbygoogle = window.adsbygoogle || []).push({});
+
+      // ✅ Déclare l'observateur
+      const observer = new MutationObserver(() => {
+        if (adIns.getAttribute('data-ad-status') === 'filled') {
+          adContainer.style.visibility = 'visible';
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(adIns, {
+        attributes: true,
+        attributeFilter: ['data-ad-status']
+      });
+    });
   </script>
 </body>
-  </html>
+</html>
