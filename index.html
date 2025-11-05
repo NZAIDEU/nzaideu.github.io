@@ -1,138 +1,210 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="google-adsense-account" content="ca-pub-2650734904975532">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeQuest – Apprendre en s'amusant</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz – Lyncs CodeQuest</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+      padding: 0;
       color: #333;
     }
 
     header {
-      background: linear-gradient(to right, #0077cc, #dd2476);
+      background: linear-gradient(to right, #ff6a00, #ee0979);
       color: white;
-      padding: 40px 20px;
+      padding: 25px 20px;
       text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    header h1 {
+    h1 {
       margin: 0;
-      font-size: 2.5em;
+      font-size: 2em;
     }
 
-    header p {
-      font-size: 1.2em;
-      margin-top: 10px;
-    }
-
-    section {
-      padding: 40px 20px;
+    main {
       max-width: 800px;
-      margin: auto;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
-    .highlight {
-      background: #fff;
-      border-left: 6px solid #0077cc;
+    #question-box {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+
+    #question-text {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      color: #0077cc;
+    }
+
+    #options-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    #options-list li {
+      background: #eee;
+      margin: 8px 0;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    #options-list li:hover {
+      background: #d0eaff;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #0077cc;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 15px;
+      transition: background 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #005fa3;
+    }
+
+    #explanation-box {
+      background: #fff8e1;
+      border-left: 5px solid #ffc107;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      margin-bottom: 30px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    .highlight h2 {
-      margin-top: 0;
-      color: #dd2476;
+    #timer {
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #ff5722;
+      text-align: center;
     }
 
     footer {
-      background: #f1f1f1;
       text-align: center;
       padding: 20px;
-      font-size: 0.9em;
       color: #777;
     }
 
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 2em;
-      }
-      section {
-        padding: 20px;
-      }
-    }
     .ad-section {
-  background: #fffbe6;
-  border-left: 5px solid #ffc107;
-  padding: 20px;
-  margin: 40px 0;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
+      visibility: hidden; /* masqué mais avec largeur calculable */
+      background: #fffbe6;
+      border-left: 5px solid #ffc107;
+      padding: 15px;
+      margin: 30px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
 
-.ad-section h2 {
-  margin-top: 0;
-  color: #dd2476;
-}
+    .ad-section h2 {
+      margin-top: 0;
+      color: #dd2476;
+      font-size: 1.2em;
+    }
 
-.ad-box {
-  margin-top: 10px;
-}
+    .ad-box {
+      margin-top: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .ad-box:hover {
+      transform: scale(1.01);
+    }
+
+    .adsbygoogle {
+      min-width: 320px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>🎓 CodeQuest</h1>
-    <p>Apprenez la programmation avec des quiz interactifs et motivants</p>
+    <h1>Lyncs CodeQuest</h1>
+    <p>Langage : <span id="langue-actuelle">Python</span> | Niveau : <span id="niveau-actuel">Débutant</span></p>
   </header>
-<section class="ad-section">
-  <h2>📢 Publicité sponsorisée</h2>
-  <div class="ad-box">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2650734904975532"
+
+  <section class="ad-section" id="ad-container">
+    <h2>📢 Publicité sponsorisée</h2>
+    <div class="ad-box">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2650734904975532"
         crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
+      <ins class="adsbygoogle"
         style="display:block"
         data-ad-format="autorelaxed"
         data-ad-client="ca-pub-2650734904975532"
-        data-ad-slot="3521813772"></ins>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
-</section>
-  <section>
-    <div class="highlight">
-      <h2>🚀 Pourquoi CodeQuest ?</h2>
-      <p>CodeQuest est une plateforme éducative conçue pour rendre l'apprentissage du code amusant, accessible et stimulant. Que vous soyez débutant ou expert, chaque quiz vous rapproche de la maîtrise.</p>
-    </div>
-
-    <div class="highlight">
-      <h2>📚 Langages disponibles</h2>
-      <ul>
-        <li>Python 🐍</li>
-        <li>JavaScript ⚡</li>
-        <li>HTML/CSS 🎨</li>
-        <li>C 💻</li>
-      </ul>
-    </div>
-
-    <div class="highlight">
-      <h2>🌍 À propos du créateur</h2>
-      <p>Je suis Rayan, développeur passionné basé à Douala. Mon objectif est de créer des outils éducatifs premium pour les jeunes talents africains. CodeQuest est mon cockpit, et chaque ligne de code est pensée pour motiver, inspirer et faire progresser.</p>
+        data-ad-slot="3521813772"
+        data-ad-status="hidden"></ins>
     </div>
   </section>
 
+  <main id="quiz-container">
+    <p id="timer">⏱️ Temps restant : 20s</p>
+
+    <section id="question-box">
+      <h2 id="question-text">Chargement de la question...</h2>
+      <ul id="options-list">
+        <li>Option A</li>
+        <li>Option B</li>
+        <li>Option C</li>
+        <li>Option D</li>
+      </ul>
+    </section>
+
+    <section id="explanation-box" style="display: none;">
+      <h3>Explication</h3>
+      <p id="explanation-text">L’explication de la réponse s’affichera ici.</p>
+      <button id="next-btn" class="btn">Question suivante</button>
+    </section>
+  </main>
+
   <footer>
-    © 2025 CodeQuest – Créé avec ❤️ par Rayan
+    &copy; 2025 Lyncs CodeQuest
   </footer>
 
+  <script type="module" src="quiz.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      const adContainer = document.getElementById('ad-container');
+      const adIns = document.querySelector('.adsbygoogle');
+
+      // Affiche le conteneur pour que Google détecte la largeur
+      adContainer.style.visibility = 'visible';
+
+      // Lance le push
+      (adsbygoogle = window.adsbygoogle || []).push({});
+
+      // Observe si la pub est remplie
+      const observer = new MutationObserver(() => {
+        if (adIns.getAttribute('data-ad-status') === 'filled') {
+          adContainer.style.visibility = 'visible';
+          observer.disconnect();
+        }
+      });
+
+      observer.observe(adIns, {
+        attributes: true,
+        attributeFilter: ['data-ad-status']
+      });
+    });
+  </script>
 </body>
 </html>
