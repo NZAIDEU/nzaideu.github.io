@@ -1452,7 +1452,7 @@
    <div class="container">
     <div class="nav-content">
      <div class="logo">
-      { RN }
+      NRV
      </div>
      <div class="burger-menu" id="burgerMenu">
       <div class="burger-line"></div>
@@ -1465,7 +1465,7 @@
       <li><a href="#competences">Compétences</a></li>
       <li><a href="#projets">Projets</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li><a href="CV.pdf" class="cv-button" id="cvButton">📄 Mon CV</a></li>
+      <li><a href="CV.Pdf" class="cv-button" id="cvButton">📄 Mon CV</a></li>
      </ul>
     </div>
    </div>
@@ -2138,14 +2138,14 @@
       });
 
       viewCV.addEventListener('click', function() {
-        window.open('#', '_blank');
+        window.open('CV.pdf', '_blank');
         cvModal.classList.remove('active');
       });
 
       downloadCV.addEventListener('click', function() {
         const link = document.createElement('a');
         link.href = '#';
-        link.download = 'CV_NZAIDEU_Rayan.pdf';
+        link.download = 'CV.pdf';
         link.target = '_blank';
         link.click();
         cvModal.classList.remove('active');
