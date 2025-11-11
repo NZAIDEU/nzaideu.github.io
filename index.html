@@ -1465,7 +1465,7 @@
       <li><a href="#competences">Compétences</a></li>
       <li><a href="#projets">Projets</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li><a href="CV.Pdf" class="cv-button" id="cvButton">📄 Mon CV</a></li>
+      <li><a href="moncv.pdf" class="cv-button" id="cvButton">📄 Mon CV</a></li>
      </ul>
     </div>
    </div>
@@ -2138,14 +2138,14 @@
       });
 
       viewCV.addEventListener('click', function() {
-        window.open('CV.pdf', '_blank');
+        window.open('moncv.pdf', '_blank');
         cvModal.classList.remove('active');
       });
 
       downloadCV.addEventListener('click', function() {
         const link = document.createElement('a');
-        link.href = '#';
-        link.download = 'CV.pdf';
+        link.href = 'moncv.pdf';
+        link.download = 'moncv.pdf';
         link.target = '_blank';
         link.click();
         cvModal.classList.remove('active');
@@ -2270,4 +2270,4 @@
     }
   </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99cda7cf62bb1ef2',t:'MTc2Mjg2MjcwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
- </html>
+                                 </html>
